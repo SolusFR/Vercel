@@ -3,82 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solus Client | Legendary Edition</title>
+    <title>Solus Client | The Legendary Minecraft Experience</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/scrollreveal"></script>
 </head>
 <body>
+    <div class="glow-bg"></div>
+    
     <nav>
         <div class="logo">SOLUS<span>CLIENT</span></div>
         <div class="nav-links">
-            <a href="#features">Features</a>
-            <a href="#store">Store</a>
-            <a href="http://195.95.144.121:3000/assets/launcher/SolusSetup.exe" class="btn-download-nav">Download</a>
+            <a href="#features">Fonctionnalités</a>
+            <a href="#store">Cosmétiques</a>
+            <a href="#staff">Équipe</a>
+            <a href="http://node.lifestealmc.fr:25515/assets/launcher/SolusSetup.exe" class="btn-download-nav">TÉLÉCHARGER</a>
         </div>
     </nav>
 
     <header>
-        <div class="hero">
-            <h1>The Next Generation of <br><span>Minecraft Clients</span></h1>
-            <p>Experience extreme performance, stunning visuals, and exclusive cosmetics. Built for the community, by the community.</p>
+        <div class="hero-content">
+            <div class="badge">NOUVELLE ÉDITION LEGENDARY</div>
+            <h1>Élevez votre <span>Gameplay</span></h1>
+            <p>Le client 1.8.9 le plus optimisé avec une interface moderne, des cosmétiques exclusifs et une protection PvP avancée.</p>
             <div class="hero-btns">
-                <a href="http://195.95.144.121:3000/assets/launcher/SolusSetup.exe" class="btn-main">Get Solus Now</a>
-                <a href="#features" class="btn-sub">Learn More</a>
+                <a href="http://node.lifestealmc.fr:25515/assets/launcher/SolusSetup.exe" class="btn-main">Jouer Maintenant</a>
+                <a href="#features" class="btn-sub">Explorer les mods</a>
             </div>
         </div>
-        <div class="hero-image">
-            <!-- Image placeholder for launcher mockup -->
-            <div class="mockup"></div>
+        <div class="hero-visual">
+            <div class="launcher-mockup">
+                <div class="mockup-screen">
+                    <div class="mockup-sidebar"></div>
+                    <div class="mockup-main">
+                        <div class="mockup-circle"></div>
+                        <div class="mockup-lines"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <section id="features" class="features">
-        <h2>Why choose <span>Solus?</span></h2>
+    <section id="features" class="section">
+        <div class="section-header">
+            <h2>Pourquoi <span>Solus ?</span></h2>
+            <p>Une technologie de pointe pour des performances inégalées.</p>
+        </div>
         <div class="feat-grid">
             <div class="feat-card">
-                <div class="icon">🚀</div>
-                <h3>Max Performance</h3>
-                <p>Up to 2x more FPS than vanilla with our optimized rendering engine.</p>
+                <div class="feat-icon">🚀</div>
+                <h3>FPS Boost++</h3>
+                <p>Moteur de rendu optimisé pour gagner jusqu'à 150% de performances sur les petites configs.</p>
             </div>
             <div class="feat-card">
-                <div class="icon">✨</div>
-                <h3>Custom Cosmetics</h3>
-                <p>Exclusive capes and wings you won't find anywhere else.</p>
+                <div class="feat-icon">💎</div>
+                <h3>Cosmétiques 3D</h3>
+                <p>Capes animées et ailes exclusives synchronisées en temps réel sur tous les joueurs.</p>
             </div>
             <div class="feat-card">
-                <div class="icon">🛡️</div>
-                <h3>Admin Tools</h3>
-                <p>Advanced friend system and cheat detection for a safe experience.</p>
+                <div class="feat-icon">🛡️</div>
+                <h3>Anti-Cheat Fix</h3>
+                <p>Correction des bugs d'invisibilité et des lags serveurs pour un PvP fluide et équitable.</p>
             </div>
         </div>
     </section>
 
-    <section id="store" class="store">
-        <h2>Official <span>Cosmetic Store</span></h2>
-        <div class="cos-grid">
-            <div class="cos-card">
-                <div class="cos-preview" style="background-image: url('http://195.95.144.121:3000/assets/capes/cape_colere.png');"></div>
-                <h3>Cape Colère</h3>
-                <p>500 Solus Coins</p>
-                <button class="btn-buy">Buy Now</button>
+    <section id="store" class="section">
+        <div class="section-header">
+            <h2>Boutique <span>Cosmétique</span></h2>
+            <p>Affichez votre style unique sur les serveurs.</p>
+        </div>
+        <div class="store-grid">
+            <div class="cos-item">
+                <div class="cos-img" style="background-image: url('http://node.lifestealmc.fr:25515/assets/capes/cape_colere.png');"></div>
+                <div class="cos-info">
+                    <h3>Cape Colère</h3>
+                    <div class="price">5.99€</div>
+                    <button class="btn-buy">Acheter</button>
+                </div>
             </div>
-            <div class="cos-card">
-                <div class="cos-preview" style="background-image: url('http://195.95.144.121:3000/assets/capes/cape_vengeance.png');"></div>
-                <h3>Cape Vengeance</h3>
-                <p>500 Solus Coins</p>
-                <button class="btn-buy">Buy Now</button>
+            <div class="cos-item">
+                <div class="cos-img" style="background-image: url('http://node.lifestealmc.fr:25515/assets/capes/cape_vengeance.png');"></div>
+                <div class="cos-info">
+                    <h3>Cape Vengeance</h3>
+                    <div class="price">5.99€</div>
+                    <button class="btn-buy">Acheter</button>
+                </div>
             </div>
-            <div class="cos-card">
-                <div class="cos-preview" style="background-image: url('http://195.95.144.121:3000/assets/capes/cape_haine.png');"></div>
-                <h3>Cape Haine</h3>
-                <p>500 Solus Coins</p>
-                <button class="btn-buy">Buy Now</button>
+            <div class="cos-item">
+                <div class="cos-img" style="background-image: url('http://node.lifestealmc.fr:25515/assets/capes/cape_haine.png');"></div>
+                <div class="cos-info">
+                    <h3>Cape Haine</h3>
+                    <div class="price">5.99€</div>
+                    <button class="btn-buy">Acheter</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="staff" class="section">
+        <div class="section-header">
+            <h2>Le <span>Staff</span></h2>
+            <p>Les créateurs derrière la légende.</p>
+        </div>
+        <div class="staff-list">
+            <div class="staff-card">
+                <img src="https://minotar.net/helm/38c6be5c-34c3-4daa-8e38-e55f1881e52b/100.png" alt="Admin">
+                <h3>Solus Owner</h3>
+                <span class="rank">FONDATEUR</span>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2026 SolusFR. Not affiliated with Mojang AB.</p>
+        <div class="footer-content">
+            <div class="footer-logo">SOLUS<span>CLIENT</span></div>
+            <p>Propulsé par node.lifestealmc.fr</p>
+            <div class="copyright">© 2026 SolusFR. Tous droits réservés.</div>
+        </div>
     </footer>
+
+    <script>
+        ScrollReveal().reveal('.feat-card, .cos-item, .staff-card', { 
+            delay: 200, 
+            distance: '50px',
+            origin: 'bottom',
+            interval: 100 
+        });
+        ScrollReveal().reveal('.hero-content', { delay: 100, origin: 'left', distance: '100px' });
+        ScrollReveal().reveal('.hero-visual', { delay: 300, origin: 'right', distance: '100px' });
+    </script>
 </body>
 </html>
