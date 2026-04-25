@@ -25,7 +25,16 @@
         <div class="hero-content">
             <div class="badge">NOUVELLE ÉDITION LEGENDARY</div>
             <h1>Élevez votre <span>Gameplay</span></h1>
-            <p>Le client 1.8.9 le plus optimisé avec une interface moderne, des cosmétiques exclusifs et une protection PvP avancée.</p>
+            <p>Le client 1.8.9 le plus optimisé avec des cosmétiques exclusifs et une protection PvP avancée.</p>
+            
+            <div class="skin-preview-box">
+                <input type="text" id="skin-input" placeholder="Ton pseudo Minecraft..." class="preview-input">
+                <div class="skin-display">
+                    <img id="player-skin" src="https://visage.surval.at/full/832/Steve" alt="Skin Preview">
+                    <div class="cape-overlay" id="cape-preview"></div>
+                </div>
+            </div>
+
             <div class="hero-btns">
                 <a href="http://node.lifestealmc.fr:25515/assets/launcher/SolusSetup.exe" class="btn-main">Jouer Maintenant</a>
                 <a href="#features" class="btn-sub">Explorer les mods</a>
@@ -74,28 +83,28 @@
             <p>Affichez votre style unique sur les serveurs.</p>
         </div>
         <div class="store-grid">
-            <div class="cos-item">
+            <div class="cos-item" onclick="setPreviewCape('cape_colere.png')">
                 <div class="cos-img" style="background-image: url('http://node.lifestealmc.fr:25515/assets/capes/cape_colere.png');"></div>
                 <div class="cos-info">
                     <h3>Cape Colère</h3>
                     <div class="price">5.99€</div>
-                    <button class="btn-buy">Acheter</button>
+                    <button class="btn-buy">Aperçu</button>
                 </div>
             </div>
-            <div class="cos-item">
+            <div class="cos-item" onclick="setPreviewCape('cape_vengeance.png')">
                 <div class="cos-img" style="background-image: url('http://node.lifestealmc.fr:25515/assets/capes/cape_vengeance.png');"></div>
                 <div class="cos-info">
                     <h3>Cape Vengeance</h3>
                     <div class="price">5.99€</div>
-                    <button class="btn-buy">Acheter</button>
+                    <button class="btn-buy">Aperçu</button>
                 </div>
             </div>
-            <div class="cos-item">
+            <div class="cos-item" onclick="setPreviewCape('cape_haine.png')">
                 <div class="cos-img" style="background-image: url('http://node.lifestealmc.fr:25515/assets/capes/cape_haine.png');"></div>
                 <div class="cos-info">
                     <h3>Cape Haine</h3>
                     <div class="price">5.99€</div>
-                    <button class="btn-buy">Acheter</button>
+                    <button class="btn-buy">Aperçu</button>
                 </div>
             </div>
         </div>
@@ -124,6 +133,21 @@
     </footer>
 
     <script>
+        const skinInput = document.getElementById('skin-input');
+        const playerSkin = document.getElementById('player-skin');
+        const capePreview = document.getElementById('cape-preview');
+
+        skinInput.addEventListener('input', (e) => {
+            const val = e.target.value || "Steve";
+            playerSkin.src = `https://visage.surval.at/full/832/${val}`;
+        });
+
+        function setPreviewCape(filename) {
+            capePreview.style.backgroundImage = `url('http://node.lifestealmc.fr:25515/assets/capes/${filename}')`;
+            capePreview.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         ScrollReveal().reveal('.feat-card, .cos-item, .staff-card', { 
             delay: 200, 
             distance: '50px',

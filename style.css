@@ -1,3 +1,66 @@
+/* Skin Preview Styles */
+.skin-preview-box {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.preview-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    padding: 12px 20px;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    width: 300px;
+    transition: 0.3s;
+}
+
+.preview-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(255,255,255,0.08);
+}
+
+.skin-display {
+    position: relative;
+    width: 250px;
+    height: 350px;
+    background: radial-gradient(circle at center, rgba(0, 242, 255, 0.1) 0%, transparent 70%);
+    border-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.skin-display img {
+    height: 90%;
+    z-index: 2;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+
+.cape-overlay {
+    position: absolute;
+    width: 80px;
+    height: 140px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    top: 60px;
+    right: 40px;
+    z-index: 1;
+    display: none;
+    transform: rotate(5deg);
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.8));
+    animation: capeFloat 3s infinite ease-in-out;
+}
+
+@keyframes capeFloat {
+    0%, 100% { transform: translateY(0) rotate(5deg); }
+    50% { transform: translateY(-5px) rotate(8deg); }
+}
+
 :root {
     --bg: #050507;
     --card-bg: rgba(20, 20, 25, 0.6);
@@ -92,6 +155,7 @@ header {
     align-items: center;
     padding: 0 8%;
     gap: 50px;
+    padding-top: 100px;
 }
 
 .hero-content {
@@ -293,6 +357,7 @@ header {
     border: 1px solid var(--border);
     overflow: hidden;
     transition: 0.4s;
+    cursor: pointer;
 }
 
 .cos-item:hover {
