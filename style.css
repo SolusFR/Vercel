@@ -1,0 +1,227 @@
+:root {
+    --bg: #0a0a0c;
+    --primary: #00f2ff;
+    --secondary: #0072ff;
+    --text: #ffffff;
+    --card-bg: rgba(255, 255, 255, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+span {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Nav */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 10%;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    background: rgba(10, 10, 12, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    margin-left: 30px;
+    font-weight: 400;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+.btn-download-nav {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: 600 !important;
+}
+
+/* Hero */
+header {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0 10%;
+    background: radial-gradient(circle at 80% 20%, rgba(0, 242, 255, 0.1) 0%, transparent 40%);
+}
+
+.hero {
+    flex: 1;
+}
+
+.hero h1 {
+    font-size: 64px;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 20px;
+    color: #a0a0a0;
+    margin-bottom: 40px;
+    max-width: 600px;
+}
+
+.hero-btns {
+    display: flex;
+    gap: 20px;
+}
+
+.btn-main {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    color: white;
+    text-decoration: none;
+    padding: 15px 40px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+    box-shadow: 0 10px 20px rgba(0, 242, 255, 0.2);
+}
+
+.btn-main:hover {
+    transform: translateY(-5px);
+}
+
+.btn-sub {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    padding: 15px 40px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-sub:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Features */
+.features {
+    padding: 100px 10%;
+    text-align: center;
+}
+
+.features h2 {
+    font-size: 48px;
+    margin-bottom: 60px;
+}
+
+.feat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.feat-card {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: 0.3s;
+}
+
+.feat-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-10px);
+}
+
+.feat-card .icon {
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+.feat-card h3 {
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.feat-card p {
+    color: #a0a0a0;
+}
+
+/* Store */
+.store {
+    padding: 100px 10%;
+    text-align: center;
+    background: rgba(0, 242, 255, 0.02);
+}
+
+.store h2 {
+    font-size: 48px;
+    margin-bottom: 60px;
+}
+
+.cos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.cos-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.cos-preview {
+    height: 300px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.btn-buy {
+    background: white;
+    color: black;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-buy:hover {
+    background: var(--primary);
+    color: white;
+}
+
+footer {
+    padding: 50px;
+    text-align: center;
+    opacity: 0.5;
+    font-size: 14px;
+}
