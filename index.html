@@ -20,7 +20,7 @@
             <a href="#features">Fonctionnalités</a>
             <a href="#store">Cosmétiques</a>
             <a href="#staff">Équipe</a>
-            <a href="http://node.lifestealmc.fr:25515/assets/launcher/SolusSetup.exe" class="btn-download-nav">TÉLÉCHARGER</a>
+            <a href="/assets/launcher/SolusSetup.exe" class="btn-download-nav">TÉLÉCHARGER</a>
         </div>
     </nav>
 
@@ -39,7 +39,7 @@
             </div>
 
             <div class="hero-btns">
-                <a href="http://node.lifestealmc.fr:25515/assets/launcher/SolusSetup.exe" class="btn-main">Jouer Maintenant</a>
+                <a href="/assets/launcher/SolusSetup.exe" class="btn-main">Jouer Maintenant</a>
                 <a href="#features" class="btn-sub">Explorer les mods</a>
             </div>
         </div>
@@ -147,16 +147,20 @@
 
         async function fetchStore() {
             try {
-                const target = 'http://node.lifestealmc.fr:25515/api/store';
-                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`;
+                // Utilisation du proxy Vercel natif (bypass Mixed Content & CORS)
+                const target = '/api/store';
                 
-                const response = await fetch(proxyUrl);
+                const response = await fetch(target);
                 const data = await response.json();
                 
                 storeContainer.innerHTML = '';
                 data.forEach(item => {
-                    // On proxy aussi les images car le navigateur bloque l'HTTP sur un site HTTPS
-                    const proxiedImageUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(item.texture_url)}`;
+                    // Les images passent par Vercel aussi (/assets/capes/...)
+                    // On remplace l'URL absolue par une URL relative Vercel si elle pointe vers le serveur
+                    let proxiedImageUrl = item.texture_url;
+                    if (proxiedImageUrl.includes('node.lifestealmc.fr:25515/assets')) {
+                        proxiedImageUrl = proxiedImageUrl.split('node.lifestealmc.fr:25515')[1];
+                    }
                     
                     const div = document.createElement('div');
                     div.className = 'cos-item';
@@ -174,7 +178,7 @@
                 ScrollReveal().reveal('.cos-item', { delay: 200, interval: 100 });
             } catch (e) {
                 console.error(e);
-                storeContainer.innerHTML = '<p style="color:#ff5555;text-align:center;grid-column:1/-1">Erreur de chargement de la boutique (API Offline)</p>';
+                storeContainer.innerHTML = '<p style="color:#ff5555;text-align:center;grid-column:1/-1">Erreur de chargement de la boutique.</p>';
             }
         }
 

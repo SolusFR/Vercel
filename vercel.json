@@ -3,6 +3,8 @@
   "public": true,
   "name": "solus-landing",
   "rewrites": [
+    { "source": "/api/:path*", "destination": "http://node.lifestealmc.fr:25515/api/:path*" },
+    { "source": "/assets/:path*", "destination": "http://node.lifestealmc.fr:25515/assets/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
