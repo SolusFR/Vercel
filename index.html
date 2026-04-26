@@ -82,31 +82,8 @@
             <h2>Boutique <span>Cosmétique</span></h2>
             <p>Affichez votre style unique sur les serveurs.</p>
         </div>
-        <div class="store-grid">
-            <div class="cos-item" onclick="setPreviewCape('cape_colere.png')">
-                <div class="cos-img" style="background-image: url('http://node.lifestealmc.fr:25515/assets/capes/cape_colere.png');"></div>
-                <div class="cos-info">
-                    <h3>Cape Colère</h3>
-                    <div class="price">5.99€</div>
-                    <button class="btn-buy">Aperçu</button>
-                </div>
-            </div>
-            <div class="cos-item" onclick="setPreviewCape('cape_vengeance.png')">
-                <div class="cos-img" style="background-image: url('http://node.lifestealmc.fr:25515/assets/capes/cape_vengeance.png');"></div>
-                <div class="cos-info">
-                    <h3>Cape Vengeance</h3>
-                    <div class="price">5.99€</div>
-                    <button class="btn-buy">Aperçu</button>
-                </div>
-            </div>
-            <div class="cos-item" onclick="setPreviewCape('cape_haine.png')">
-                <div class="cos-img" style="background-image: url('http://node.lifestealmc.fr:25515/assets/capes/cape_haine.png');"></div>
-                <div class="cos-info">
-                    <h3>Cape Haine</h3>
-                    <div class="price">5.99€</div>
-                    <button class="btn-buy">Aperçu</button>
-                </div>
-            </div>
+        <div id="store-container" class="store-grid">
+            <p style="text-align: center; color: #aaa; grid-column: 1/-1;">Chargement des cosmétiques...</p>
         </div>
     </section>
 
@@ -136,19 +113,49 @@
         const skinInput = document.getElementById('skin-input');
         const playerSkin = document.getElementById('player-skin');
         const capePreview = document.getElementById('cape-preview');
+        const storeContainer = document.getElementById('store-container');
 
         skinInput.addEventListener('input', (e) => {
             const val = e.target.value || "Steve";
             playerSkin.src = `https://visage.surval.at/full/832/${val}`;
         });
 
-        function setPreviewCape(filename) {
-            capePreview.style.backgroundImage = `url('http://node.lifestealmc.fr:25515/assets/capes/${filename}')`;
+        async function fetchStore() {
+            try {
+                const response = await fetch('http://node.lifestealmc.fr:25515/api/store');
+                const data = await response.json();
+                
+                storeContainer.innerHTML = '';
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'cos-item';
+                    div.onclick = () => setPreviewCape(item.texture_url);
+                    div.innerHTML = `
+                        <div class="cos-img" style="background-image: url('${item.texture_url}');"></div>
+                        <div class="cos-info">
+                            <h3>${item.name}</h3>
+                            <div class="price">${item.price > 0 ? item.price + '€' : 'GRATUIT'}</div>
+                            <button class="btn-buy">Aperçu</button>
+                        </div>
+                    `;
+                    storeContainer.appendChild(div);
+                });
+                
+                ScrollReveal().reveal('.cos-item', { delay: 200, interval: 100 });
+            } catch (e) {
+                storeContainer.innerHTML = '<p style="text-align: center; color: #ff5555; grid-column: 1/-1;">Erreur lors du chargement de la boutique.</p>';
+            }
+        }
+
+        function setPreviewCape(url) {
+            capePreview.style.backgroundImage = `url('${url}')`;
             capePreview.style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        ScrollReveal().reveal('.feat-card, .cos-item, .staff-card', { 
+        fetchStore();
+
+        ScrollReveal().reveal('.feat-card, .staff-card', { 
             delay: 200, 
             distance: '50px',
             origin: 'bottom',
