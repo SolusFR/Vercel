@@ -155,11 +155,14 @@
                 
                 storeContainer.innerHTML = '';
                 data.forEach(item => {
+                    // On proxy aussi les images car le navigateur bloque l'HTTP sur un site HTTPS
+                    const proxiedImageUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(item.texture_url)}`;
+                    
                     const div = document.createElement('div');
                     div.className = 'cos-item';
-                    div.onclick = () => { if(skinViewer) skinViewer.loadCape(item.texture_url); window.scrollTo(0,0); };
+                    div.onclick = () => { if(skinViewer) skinViewer.loadCape(proxiedImageUrl); window.scrollTo(0,0); };
                     div.innerHTML = `
-                        <div class="cos-img" style="background-image: url('${item.texture_url}');"></div>
+                        <div class="cos-img" style="background-image: url('${proxiedImageUrl}');"></div>
                         <div class="cos-info">
                             <h3>${item.name}</h3>
                             <div class="price">${item.price > 0 ? item.price + '€' : 'GRATUIT'}</div>
