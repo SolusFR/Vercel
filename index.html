@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/scrollreveal"></script>
-    <!-- Chargement de skinview3d depuis un CDN fiable -->
-    <script src="https://unpkg.com/skinview3d@3.0.0-alpha.1/dist/skinview3d.bundle.js"></script>
+    
+    <!-- Utilisation d'un CDN plus stable pour skinview3d -->
+    <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.0-alpha.1/dist/skinview3d.bundle.js"></script>
 </head>
 <body>
     <div class="glow-bg"></div>
@@ -115,28 +116,38 @@
         const storeContainer = document.getElementById('store-container');
         let skinViewer;
 
-        // On attend que la page soit prête
-        window.addEventListener('load', () => {
-            // Initialisation du 3D Skin Viewer
+        // Fonction d'initialisation sécurisée
+        function initViewer() {
+            if (typeof skinview3d === 'undefined') {
+                console.error("SkinView3D n'est pas encore chargé, nouvel essai dans 500ms...");
+                setTimeout(initViewer, 500);
+                return;
+            }
+
             try {
                 skinViewer = new skinview3d.SkinViewer({
                     canvas: document.getElementById("skin_container"),
                     width: 300,
                     height: 400,
-                    skin: "https://mineskin.org/api/v1/get/id/1"
+                    skin: "https://minotar.net/skin/Steve"
                 });
 
                 skinViewer.autoRotate = true;
                 skinViewer.autoRotateSpeed = 0.5;
                 skinViewer.animation = new skinview3d.IdleAnimation();
+                console.log("SkinView3D initialisé avec succès.");
             } catch (err) {
-                console.error("Erreur initialisation SkinView3D:", err);
+                console.error("Erreur lors de l'initialisation du viewer:", err);
             }
+        }
 
+        // On lance l'initialisation au chargement de la fenêtre
+        window.addEventListener('load', () => {
+            initViewer();
             fetchStore();
         });
 
-        skinInput.addEventListener('input', async (e) => {
+        skinInput.addEventListener('input', (e) => {
             if (!skinViewer) return;
             const val = e.target.value || "Steve";
             skinViewer.loadSkin(`https://minotar.net/skin/${val}`);
@@ -144,8 +155,22 @@
 
         async function fetchStore() {
             try {
-                // On tente en HTTPS d'abord, si ça échoue on prévient
-                const response = await fetch('https://node.lifestealmc.fr:25515/api/store').catch(() => fetch('http://node.lifestealmc.fr:25515/api/store'));
+                // Tentative en HTTPS (Vercel le demande), sinon fallback
+                const apiURL = 'https://node.lifestealmc.fr:25515/api/store';
+                
+                // On utilise un timeout pour ne pas bloquer si l'HTTPS échoue (ERR_SSL_PROTOCOL_ERROR)
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+                let response;
+                try {
+                    response = await fetch(apiURL, { signal: controller.signal });
+                } catch (e) {
+                    console.warn("HTTPS échoué, tentative en HTTP (Peut être bloqué par le navigateur)...");
+                    response = await fetch(apiURL.replace('https', 'http'));
+                }
+                
+                clearTimeout(timeoutId);
                 const data = await response.json();
                 
                 storeContainer.innerHTML = '';
@@ -167,12 +192,22 @@
                 ScrollReveal().reveal('.cos-item', { delay: 200, interval: 100 });
             } catch (e) {
                 console.error("Fetch error:", e);
-                storeContainer.innerHTML = '<p style="text-align: center; color: #ff5555; grid-column: 1/-1;">Erreur de connexion à l\'API (HTTPS Requis).</p>';
+                storeContainer.innerHTML = `
+                    <div style="text-align: center; color: #ff5555; grid-column: 1/-1; padding: 20px; background: rgba(255,0,0,0.1); border-radius: 15px;">
+                        <h3>⚠️ Problème de Connexion API</h3>
+                        <p>Le site est sécurisé (HTTPS) mais ton serveur Node.js ne l'est pas.</p>
+                        <p style="font-size: 14px; margin-top: 10px; opacity: 0.8;">
+                            Pour corriger cela, tu dois activer le SSL (HTTPS) sur le port 25515 de <b>node.lifestealmc.fr</b> 
+                            ou passer par un proxy Cloudflare.
+                        </p>
+                    </div>
+                `;
             }
         }
 
         function setPreviewCape(url) {
             if (skinViewer) {
+                // On force le chargement de la cape (même en HTTP si besoin)
                 skinViewer.loadCape(url);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
