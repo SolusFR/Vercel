@@ -117,15 +117,12 @@
         const storeContainer = document.getElementById('store-container');
         let skinViewer;
 
-        // Fonction d'initialisation sécurisée
         function initViewer() {
-            // On vérifie les différents noms possibles (certaines versions utilisent skinview3d, d'autres SkinViewer directement)
             if (typeof skinview3d === 'undefined') {
-                console.log("skinview3d undefined, retry...");
-                setTimeout(initViewer, 1000);
+                console.log("skinview3d non chargé, attente...");
+                setTimeout(initViewer, 500);
                 return;
             }
-
             try {
                 skinViewer = new skinview3d.SkinViewer({
                     canvas: document.getElementById("skin_container"),
@@ -133,60 +130,34 @@
                     height: 400,
                     skin: "https://minotar.net/skin/Steve"
                 });
-
-                // Configuration Stable v2
                 skinViewer.autoRotate = true;
                 skinViewer.autoRotateSpeed = 0.5;
-                
-                // Animation (Si disponible dans la version bundle)
-                if (skinview3d.IdleAnimation) {
-                    skinViewer.animation = new skinview3d.IdleAnimation();
-                } else if (skinview3d.WalkingAnimation) {
-                    skinViewer.animation = new skinview3d.WalkingAnimation();
-                }
-
-                console.log("SkinView3D initialisé avec succès (v2 Stable).");
-            } catch (err) {
-                console.error("Erreur lors de l'initialisation du viewer:", err);
-            }
+                console.log("SkinView3D initialisé.");
+            } catch (e) { console.error(e); }
         }
 
-        window.addEventListener('load', () => {
+        window.onload = () => {
             initViewer();
             fetchStore();
-        });
+        };
 
         skinInput.addEventListener('input', (e) => {
-            if (!skinViewer) return;
-            const val = e.target.value || "Steve";
-            skinViewer.loadSkin(`https://minotar.net/skin/${val}`);
+            if (skinViewer) skinViewer.loadSkin(`https://minotar.net/skin/${e.target.value || "Steve"}`);
         });
 
         async function fetchStore() {
             try {
-                // On utilise le sous-domaine que Vercel acceptera peut-être plus facilement
-                const apiURL = 'https://node.lifestealmc.fr:25515/api/store';
+                const target = 'http://node.lifestealmc.fr:25515/api/store';
+                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`;
                 
-                let response;
-                try {
-                    // On tente avec timeout court
-                    const controller = new AbortController();
-                    const id = setTimeout(() => controller.abort(), 2000);
-                    response = await fetch(apiURL, { signal: controller.signal });
-                    clearTimeout(id);
-                } catch (e) {
-                    console.warn("HTTPS direct échoué, tentative alternative...");
-                    // Si on est sur Vercel, l'HTTP sera bloqué. On ne peut rien faire d'autre que prévenir l'utilisateur.
-                    response = await fetch(apiURL.replace('https', 'http'));
-                }
-                
+                const response = await fetch(proxyUrl);
                 const data = await response.json();
                 
                 storeContainer.innerHTML = '';
                 data.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'cos-item';
-                    div.onclick = () => setPreviewCape(item.texture_url);
+                    div.onclick = () => { if(skinViewer) skinViewer.loadCape(item.texture_url); window.scrollTo(0,0); };
                     div.innerHTML = `
                         <div class="cos-img" style="background-image: url('${item.texture_url}');"></div>
                         <div class="cos-info">
@@ -197,34 +168,10 @@
                     `;
                     storeContainer.appendChild(div);
                 });
-                
                 ScrollReveal().reveal('.cos-item', { delay: 200, interval: 100 });
             } catch (e) {
-                console.error("Fetch error:", e);
-                storeContainer.innerHTML = `
-                    <div style="text-align: center; color: #ff5555; grid-column: 1/-1; padding: 20px; background: rgba(255,0,0,0.1); border-radius: 15px;">
-                        <h3>⚠️ Problème de Sécurité (Mixed Content)</h3>
-                        <p>Le site Vercel est en <b>HTTPS</b> mais ton API est en <b>HTTP</b>.</p>
-                        <p style="font-size: 14px; margin-top: 10px; opacity: 0.8;">
-                            Le navigateur bloque la connexion pour ta sécurité.<br>
-                            <b>Solution :</b> Active le SSL (HTTPS) sur ton serveur Node.js port 25515 
-                            ou utilise Cloudflare pour ton domaine.
-                        </p>
-                    </div>
-                `;
-            }
-        }
-
-        function setPreviewCape(url) {
-            if (skinViewer) {
-                // Si l'URL de la cape est en HTTP, elle pourrait aussi être bloquée par le navigateur
-                // On tente de forcer le HTTPS si c'est ton propre domaine
-                let finalUrl = url;
-                if (url.includes('node.lifestealmc.fr') && !url.startsWith('https')) {
-                    finalUrl = url.replace('http', 'https');
-                }
-                skinViewer.loadCape(finalUrl);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                console.error(e);
+                storeContainer.innerHTML = '<p style="color:#ff5555;text-align:center;grid-column:1/-1">Erreur de chargement de la boutique (API Offline)</p>';
             }
         }
 
