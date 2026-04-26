@@ -8,8 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/scrollreveal"></script>
     
-    <!-- Utilisation d'un CDN plus stable pour skinview3d -->
-    <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.0.0-alpha.1/dist/skinview3d.bundle.js"></script>
+    <!-- Utilisation de la version STABLE 2.5.3 de skinview3d -->
+    <script src="https://cdn.jsdelivr.net/npm/skinview3d@2.5.3/dist/skinview3d.bundle.js"></script>
 </head>
 <body>
     <div class="glow-bg"></div>
@@ -33,7 +33,8 @@
             <div class="skin-preview-box">
                 <input type="text" id="skin-input" placeholder="Ton pseudo Minecraft..." class="preview-input">
                 <div class="skin-display">
-                    <canvas id="skin_container"></canvas>
+                    <!-- On s'assure que le canvas est bien là -->
+                    <canvas id="skin_container" style="width: 300px; height: 400px;"></canvas>
                 </div>
             </div>
 
@@ -118,9 +119,10 @@
 
         // Fonction d'initialisation sécurisée
         function initViewer() {
+            // On vérifie les différents noms possibles (certaines versions utilisent skinview3d, d'autres SkinViewer directement)
             if (typeof skinview3d === 'undefined') {
-                console.error("SkinView3D n'est pas encore chargé, nouvel essai dans 500ms...");
-                setTimeout(initViewer, 500);
+                console.log("skinview3d undefined, retry...");
+                setTimeout(initViewer, 1000);
                 return;
             }
 
@@ -132,16 +134,23 @@
                     skin: "https://minotar.net/skin/Steve"
                 });
 
+                // Configuration Stable v2
                 skinViewer.autoRotate = true;
                 skinViewer.autoRotateSpeed = 0.5;
-                skinViewer.animation = new skinview3d.IdleAnimation();
-                console.log("SkinView3D initialisé avec succès.");
+                
+                // Animation (Si disponible dans la version bundle)
+                if (skinview3d.IdleAnimation) {
+                    skinViewer.animation = new skinview3d.IdleAnimation();
+                } else if (skinview3d.WalkingAnimation) {
+                    skinViewer.animation = new skinview3d.WalkingAnimation();
+                }
+
+                console.log("SkinView3D initialisé avec succès (v2 Stable).");
             } catch (err) {
                 console.error("Erreur lors de l'initialisation du viewer:", err);
             }
         }
 
-        // On lance l'initialisation au chargement de la fenêtre
         window.addEventListener('load', () => {
             initViewer();
             fetchStore();
@@ -155,22 +164,22 @@
 
         async function fetchStore() {
             try {
-                // Tentative en HTTPS (Vercel le demande), sinon fallback
+                // On utilise le sous-domaine que Vercel acceptera peut-être plus facilement
                 const apiURL = 'https://node.lifestealmc.fr:25515/api/store';
                 
-                // On utilise un timeout pour ne pas bloquer si l'HTTPS échoue (ERR_SSL_PROTOCOL_ERROR)
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3000);
-
                 let response;
                 try {
+                    // On tente avec timeout court
+                    const controller = new AbortController();
+                    const id = setTimeout(() => controller.abort(), 2000);
                     response = await fetch(apiURL, { signal: controller.signal });
+                    clearTimeout(id);
                 } catch (e) {
-                    console.warn("HTTPS échoué, tentative en HTTP (Peut être bloqué par le navigateur)...");
+                    console.warn("HTTPS direct échoué, tentative alternative...");
+                    // Si on est sur Vercel, l'HTTP sera bloqué. On ne peut rien faire d'autre que prévenir l'utilisateur.
                     response = await fetch(apiURL.replace('https', 'http'));
                 }
                 
-                clearTimeout(timeoutId);
                 const data = await response.json();
                 
                 storeContainer.innerHTML = '';
@@ -194,11 +203,12 @@
                 console.error("Fetch error:", e);
                 storeContainer.innerHTML = `
                     <div style="text-align: center; color: #ff5555; grid-column: 1/-1; padding: 20px; background: rgba(255,0,0,0.1); border-radius: 15px;">
-                        <h3>⚠️ Problème de Connexion API</h3>
-                        <p>Le site est sécurisé (HTTPS) mais ton serveur Node.js ne l'est pas.</p>
+                        <h3>⚠️ Problème de Sécurité (Mixed Content)</h3>
+                        <p>Le site Vercel est en <b>HTTPS</b> mais ton API est en <b>HTTP</b>.</p>
                         <p style="font-size: 14px; margin-top: 10px; opacity: 0.8;">
-                            Pour corriger cela, tu dois activer le SSL (HTTPS) sur le port 25515 de <b>node.lifestealmc.fr</b> 
-                            ou passer par un proxy Cloudflare.
+                            Le navigateur bloque la connexion pour ta sécurité.<br>
+                            <b>Solution :</b> Active le SSL (HTTPS) sur ton serveur Node.js port 25515 
+                            ou utilise Cloudflare pour ton domaine.
                         </p>
                     </div>
                 `;
@@ -207,8 +217,13 @@
 
         function setPreviewCape(url) {
             if (skinViewer) {
-                // On force le chargement de la cape (même en HTTP si besoin)
-                skinViewer.loadCape(url);
+                // Si l'URL de la cape est en HTTP, elle pourrait aussi être bloquée par le navigateur
+                // On tente de forcer le HTTPS si c'est ton propre domaine
+                let finalUrl = url;
+                if (url.includes('node.lifestealmc.fr') && !url.startsWith('https')) {
+                    finalUrl = url.replace('http', 'https');
+                }
+                skinViewer.loadCape(finalUrl);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
