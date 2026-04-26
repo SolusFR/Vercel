@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/scrollreveal"></script>
+    <!-- Chargement de skinview3d depuis un CDN fiable -->
+    <script src="https://unpkg.com/skinview3d@3.0.0-alpha.1/dist/skinview3d.bundle.js"></script>
 </head>
 <body>
     <div class="glow-bg"></div>
@@ -108,35 +110,42 @@
         </div>
     </footer>
 
-    <script src="https://bsat82.github.io/skinview3d/dist/skinview3d.bundle.js"></script>
     <script>
         const skinInput = document.getElementById('skin-input');
         const storeContainer = document.getElementById('store-container');
+        let skinViewer;
 
-        // Initialize 3D Skin Viewer
-        const skinViewer = new skinview3d.SkinViewer({
-            canvas: document.getElementById("skin_container"),
-            width: 300,
-            height: 400,
-            skin: "https://mineskin.org/api/v1/get/id/1"
+        // On attend que la page soit prête
+        window.addEventListener('load', () => {
+            // Initialisation du 3D Skin Viewer
+            try {
+                skinViewer = new skinview3d.SkinViewer({
+                    canvas: document.getElementById("skin_container"),
+                    width: 300,
+                    height: 400,
+                    skin: "https://mineskin.org/api/v1/get/id/1"
+                });
+
+                skinViewer.autoRotate = true;
+                skinViewer.autoRotateSpeed = 0.5;
+                skinViewer.animation = new skinview3d.IdleAnimation();
+            } catch (err) {
+                console.error("Erreur initialisation SkinView3D:", err);
+            }
+
+            fetchStore();
         });
 
-        skinViewer.autoRotate = true;
-        skinViewer.autoRotateSpeed = 0.5;
-        skinViewer.animation = new skinview3d.IdleAnimation();
-
         skinInput.addEventListener('input', async (e) => {
+            if (!skinViewer) return;
             const val = e.target.value || "Steve";
-            // Get UUID from username (via Mojang API or similar, but for now we use a direct skin proxy)
-            skinViewer.loadSkin(`https://mineskin.org/api/v1/get/id/${val}`); 
-            // Fallback to Minotar if needed
             skinViewer.loadSkin(`https://minotar.net/skin/${val}`);
         });
 
         async function fetchStore() {
             try {
-                // IMPORTANT: L'API doit être en HTTPS pour fonctionner sur Vercel
-                const response = await fetch('https://node.lifestealmc.fr:25515/api/store');
+                // On tente en HTTPS d'abord, si ça échoue on prévient
+                const response = await fetch('https://node.lifestealmc.fr:25515/api/store').catch(() => fetch('http://node.lifestealmc.fr:25515/api/store'));
                 const data = await response.json();
                 
                 storeContainer.innerHTML = '';
@@ -158,16 +167,16 @@
                 ScrollReveal().reveal('.cos-item', { delay: 200, interval: 100 });
             } catch (e) {
                 console.error("Fetch error:", e);
-                storeContainer.innerHTML = '<p style="text-align: center; color: #ff5555; grid-column: 1/-1;">Erreur HTTPS : Ton API doit être en HTTPS (Port 25515) pour fonctionner ici.</p>';
+                storeContainer.innerHTML = '<p style="text-align: center; color: #ff5555; grid-column: 1/-1;">Erreur de connexion à l\'API (HTTPS Requis).</p>';
             }
         }
 
         function setPreviewCape(url) {
-            skinViewer.loadCape(url);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (skinViewer) {
+                skinViewer.loadCape(url);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
-
-        fetchStore();
 
         ScrollReveal().reveal('.feat-card, .staff-card', { 
             delay: 200, 
