@@ -30,8 +30,7 @@
             <div class="skin-preview-box">
                 <input type="text" id="skin-input" placeholder="Ton pseudo Minecraft..." class="preview-input">
                 <div class="skin-display">
-                    <img id="player-skin" src="https://visage.surval.at/full/832/Steve" alt="Skin Preview">
-                    <div class="cape-overlay" id="cape-preview"></div>
+                    <canvas id="skin_container"></canvas>
                 </div>
             </div>
 
@@ -109,20 +108,35 @@
         </div>
     </footer>
 
+    <script src="https://bsat82.github.io/skinview3d/dist/skinview3d.bundle.js"></script>
     <script>
         const skinInput = document.getElementById('skin-input');
-        const playerSkin = document.getElementById('player-skin');
-        const capePreview = document.getElementById('cape-preview');
         const storeContainer = document.getElementById('store-container');
 
-        skinInput.addEventListener('input', (e) => {
+        // Initialize 3D Skin Viewer
+        const skinViewer = new skinview3d.SkinViewer({
+            canvas: document.getElementById("skin_container"),
+            width: 300,
+            height: 400,
+            skin: "https://mineskin.org/api/v1/get/id/1"
+        });
+
+        skinViewer.autoRotate = true;
+        skinViewer.autoRotateSpeed = 0.5;
+        skinViewer.animation = new skinview3d.IdleAnimation();
+
+        skinInput.addEventListener('input', async (e) => {
             const val = e.target.value || "Steve";
-            playerSkin.src = `https://visage.surval.at/full/832/${val}`;
+            // Get UUID from username (via Mojang API or similar, but for now we use a direct skin proxy)
+            skinViewer.loadSkin(`https://mineskin.org/api/v1/get/id/${val}`); 
+            // Fallback to Minotar if needed
+            skinViewer.loadSkin(`https://minotar.net/skin/${val}`);
         });
 
         async function fetchStore() {
             try {
-                const response = await fetch('http://node.lifestealmc.fr:25515/api/store');
+                // IMPORTANT: L'API doit être en HTTPS pour fonctionner sur Vercel
+                const response = await fetch('https://node.lifestealmc.fr:25515/api/store');
                 const data = await response.json();
                 
                 storeContainer.innerHTML = '';
@@ -143,13 +157,13 @@
                 
                 ScrollReveal().reveal('.cos-item', { delay: 200, interval: 100 });
             } catch (e) {
-                storeContainer.innerHTML = '<p style="text-align: center; color: #ff5555; grid-column: 1/-1;">Erreur lors du chargement de la boutique.</p>';
+                console.error("Fetch error:", e);
+                storeContainer.innerHTML = '<p style="text-align: center; color: #ff5555; grid-column: 1/-1;">Erreur HTTPS : Ton API doit être en HTTPS (Port 25515) pour fonctionner ici.</p>';
             }
         }
 
         function setPreviewCape(url) {
-            capePreview.style.backgroundImage = `url('${url}')`;
-            capePreview.style.display = 'block';
+            skinViewer.loadCape(url);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
