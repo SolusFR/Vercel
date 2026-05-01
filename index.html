@@ -107,7 +107,7 @@
     <footer>
         <div class="footer-content">
             <div class="footer-logo">SOLUS<span>CLIENT</span></div>
-            <p>Propulsé par node.lifestealmc.fr</p>
+            <p>Propulsé par srv680198.hstgr.cloud</p>
             <div class="copyright">© 2026 SolusFR. Tous droits réservés.</div>
         </div>
     </footer>
@@ -159,8 +159,8 @@
                     // Les images passent par Vercel aussi (/assets/capes/...)
                     // On remplace l'URL absolue par une URL relative Vercel si elle pointe vers le serveur
                     let proxiedImageUrl = item.texture_url;
-                    if (proxiedImageUrl.includes('node.lifestealmc.fr:25515/assets')) {
-                        proxiedImageUrl = proxiedImageUrl.split('node.lifestealmc.fr:25515')[1];
+                    if (proxiedImageUrl.includes('srv680198.hstgr.cloud:7777/assets')) {
+                        proxiedImageUrl = proxiedImageUrl.split('srv680198.hstgr.cloud:7777')[1];
                     }
                     
                     const div = document.createElement('div');
