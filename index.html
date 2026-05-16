@@ -131,14 +131,16 @@
                     pixelRatio: window.devicePixelRatio || 1,
                     skin: "https://minotar.net/skin/Steve"
                 });
-                skinViewer.autoRotate = true;
-                skinViewer.autoRotateSpeed = 0.5;
                 
-                // Animation de marche par défaut
+                // Vue de dos par défaut
+                skinViewer.autoRotate = false;
+                skinViewer.camera.position.set(0, 10, -50);
+                skinViewer.camera.lookAt(0, 10, 0);
+                
                 const walk = skinViewer.animations.add(skinview3d.WalkingAnimation);
                 walk.speed = 0.5;
 
-                console.log("SkinView3D Legendary initialisé.");
+                console.log("SkinView3D Legendary (Back View) initialisé.");
             } catch (e) { console.error(e); }
         }
 
@@ -174,9 +176,8 @@
             if (skinViewer) skinViewer.loadSkin(`https://minotar.net/skin/${e.target.value || "Steve"}`);
         });
 
-        async function loadAnimatedCape(url) {
-            if (!skinViewer) return;
-            if (capeAnimationInterval) clearInterval(capeAnimationInterval);
+        async function animateSkinCape(viewer, url, intervalRef) {
+            if (!viewer) return;
             
             const img = new Image();
             img.crossOrigin = "anonymous";
@@ -193,20 +194,16 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, w, w / 2, 0, 0, w, w / 2);
                 
-                await skinViewer.loadCape(canvas.toDataURL());
+                await viewer.loadCape(canvas.toDataURL());
                 await new Promise(r => setTimeout(r, 100));
                 
-                const player = skinViewer.playerObject;
+                const player = viewer.playerObject;
                 if (!player) return;
 
                 const meshes = [];
                 player.traverse((obj) => {
-                    if (obj.isMesh) {
-                        const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
-                        const hasCapeTexture = materials.some(m => m && m.map && (m.map.image?.src?.includes('cape') || m.map.image?.src?.includes('base64')));
-                        if (obj.name.toLowerCase().includes('cape') || hasCapeTexture) {
-                            meshes.push(obj);
-                        }
+                    if (obj.isMesh && (obj.name.toLowerCase().includes('cape') || obj.name.toLowerCase().includes('back'))) {
+                        meshes.push(obj);
                     }
                 });
 
@@ -217,7 +214,7 @@
                     const animCtx = animCanvas.getContext('2d');
 
                     let currentFrame = 0;
-                    capeAnimationInterval = setInterval(() => {
+                    const interval = setInterval(() => {
                         currentFrame = (currentFrame + 1) % frames;
                         animCtx.clearRect(0, 0, animCanvas.width, animCanvas.height);
                         animCtx.drawImage(img, 0, currentFrame * (w / 2), w, w / 2, 0, 0, w, w / 2);
@@ -232,8 +229,17 @@
                             });
                         });
                     }, 50);
+                    
+                    if (intervalRef.current) clearInterval(intervalRef.current);
+                    intervalRef.current = interval;
                 }
             };
+        }
+
+        async function loadAnimatedCape(url) {
+            const ref = { current: capeAnimationInterval };
+            await animateSkinCape(skinViewer, url, ref);
+            capeAnimationInterval = ref.current;
         }
 
         async function fetchStore() {
@@ -250,19 +256,43 @@
                     
                     const div = document.createElement('div');
                     div.className = 'cos-item';
+                    
+                    const imgDiv = document.createElement('div');
+                    imgDiv.className = 'cos-img';
+                    const canvas = document.createElement('canvas');
+                    imgDiv.appendChild(canvas);
+                    
+                    const infoDiv = document.createElement('div');
+                    infoDiv.className = 'cos-info';
+                    infoDiv.innerHTML = `
+                        <h3>${item.name}</h3>
+                        <div class="price">${item.price > 0 ? item.price + '€' : 'GRATUIT'}</div>
+                        <button class="btn-buy">Aperçu</button>
+                    `;
+                    
+                    div.appendChild(imgDiv);
+                    div.appendChild(infoDiv);
+                    
                     div.onclick = () => { 
                         loadAnimatedCape(proxiedImageUrl); 
                         window.scrollTo({ top: 0, behavior: 'smooth' }); 
                     };
-                    div.innerHTML = `
-                        <div class="cos-img" style="background-image: url('${proxiedImageUrl}');"></div>
-                        <div class="cos-info">
-                            <h3>${item.name}</h3>
-                            <div class="price">${item.price > 0 ? item.price + '€' : 'GRATUIT'}</div>
-                            <button class="btn-buy">Aperçu</button>
-                        </div>
-                    `;
+                    
                     storeContainer.appendChild(div);
+
+                    // Initialisation du petit viewer 3D pour l'item
+                    const itemViewer = new skinview3d.SkinViewer({
+                        canvas: canvas,
+                        width: 250,
+                        height: 300,
+                        pixelRatio: 1,
+                        skin: "https://minotar.net/skin/Steve"
+                    });
+                    itemViewer.camera.position.set(0, 10, -50);
+                    itemViewer.camera.lookAt(0, 10, 0);
+                    
+                    const itemIntervalRef = { current: null };
+                    animateSkinCape(itemViewer, proxiedImageUrl, itemIntervalRef);
                 });
                 ScrollReveal().reveal('.cos-item', { delay: 200, interval: 100 });
             } catch (e) {
