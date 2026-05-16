@@ -116,10 +116,10 @@
         const skinInput = document.getElementById('skin-input');
         const storeContainer = document.getElementById('store-container');
         let skinViewer;
+        let capeAnimationInterval = null;
 
         function initViewer() {
             if (typeof skinview3d === 'undefined') {
-                console.log("skinview3d non chargé, attente...");
                 setTimeout(initViewer, 500);
                 return;
             }
@@ -133,7 +133,12 @@
                 });
                 skinViewer.autoRotate = true;
                 skinViewer.autoRotateSpeed = 0.5;
-                console.log("SkinView3D initialisé.");
+                
+                // Animation de marche par défaut
+                const walk = skinViewer.animations.add(skinview3d.WalkingAnimation);
+                walk.speed = 0.5;
+
+                console.log("SkinView3D Legendary initialisé.");
             } catch (e) { console.error(e); }
         }
 
@@ -169,18 +174,75 @@
             if (skinViewer) skinViewer.loadSkin(`https://minotar.net/skin/${e.target.value || "Steve"}`);
         });
 
+        async function loadAnimatedCape(url) {
+            if (!skinViewer) return;
+            if (capeAnimationInterval) clearInterval(capeAnimationInterval);
+            
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = url;
+            
+            img.onload = async () => {
+                const w = img.width;
+                const h = img.height;
+                const frames = Math.floor(h / (w / 2));
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = w;
+                canvas.height = w / 2;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, w / 2, 0, 0, w, w / 2);
+                
+                await skinViewer.loadCape(canvas.toDataURL());
+                await new Promise(r => setTimeout(r, 100));
+                
+                const player = skinViewer.playerObject;
+                if (!player) return;
+
+                const meshes = [];
+                player.traverse((obj) => {
+                    if (obj.isMesh) {
+                        const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+                        const hasCapeTexture = materials.some(m => m && m.map && (m.map.image?.src?.includes('cape') || m.map.image?.src?.includes('base64')));
+                        if (obj.name.toLowerCase().includes('cape') || hasCapeTexture) {
+                            meshes.push(obj);
+                        }
+                    }
+                });
+
+                if (meshes.length > 0) {
+                    const animCanvas = document.createElement('canvas');
+                    animCanvas.width = w;
+                    animCanvas.height = w / 2;
+                    const animCtx = animCanvas.getContext('2d');
+
+                    let currentFrame = 0;
+                    capeAnimationInterval = setInterval(() => {
+                        currentFrame = (currentFrame + 1) % frames;
+                        animCtx.clearRect(0, 0, animCanvas.width, animCanvas.height);
+                        animCtx.drawImage(img, 0, currentFrame * (w / 2), w, w / 2, 0, 0, w, w / 2);
+                        
+                        meshes.forEach(mesh => {
+                            const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+                            materials.forEach(mat => {
+                                if (mat && mat.map) {
+                                    mat.map.image = animCanvas;
+                                    mat.map.needsUpdate = true;
+                                }
+                            });
+                        });
+                    }, 50);
+                }
+            };
+        }
+
         async function fetchStore() {
             try {
-                // Utilisation du proxy Vercel natif (bypass Mixed Content & CORS)
-                const target = '/api/store';
-                
-                const response = await fetch(target);
+                const response = await fetch('/api/store');
                 const data = await response.json();
                 
                 storeContainer.innerHTML = '';
                 data.forEach(item => {
-                    // Les images passent par Vercel aussi (/assets/capes/...)
-                    // On remplace l'URL absolue par une URL relative Vercel si elle pointe vers le serveur
                     let proxiedImageUrl = item.texture_url;
                     if (proxiedImageUrl.includes('srv680198.hstgr.cloud:7777/assets')) {
                         proxiedImageUrl = proxiedImageUrl.split('srv680198.hstgr.cloud:7777')[1];
@@ -188,7 +250,10 @@
                     
                     const div = document.createElement('div');
                     div.className = 'cos-item';
-                    div.onclick = () => { if(skinViewer) skinViewer.loadCape(proxiedImageUrl); window.scrollTo(0,0); };
+                    div.onclick = () => { 
+                        loadAnimatedCape(proxiedImageUrl); 
+                        window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                    };
                     div.innerHTML = `
                         <div class="cos-img" style="background-image: url('${proxiedImageUrl}');"></div>
                         <div class="cos-info">
