@@ -147,30 +147,7 @@
         window.onload = () => {
             initViewer();
             fetchStore();
-            detectOS();
         };
-
-        function detectOS() {
-            const mainBtn = document.getElementById('main-download');
-            const platform = window.navigator.platform.toLowerCase();
-            const userAgent = window.navigator.userAgent.toLowerCase();
-            
-            if (platform.includes('linux') || userAgent.includes('linux')) {
-                mainBtn.innerText = "Télécharger pour Linux";
-                mainBtn.href = "/assets/launcher/Solus Client-1.0.2.AppImage";
-                document.getElementById('alt-lin').style.display = 'none';
-                document.getElementById('alt-win').style.display = 'inline';
-                document.getElementById('alt-deb').style.display = 'inline';
-                document.getElementById('alt-rpm').style.display = 'inline';
-            } else {
-                mainBtn.innerText = "Télécharger pour Windows";
-                mainBtn.href = "/assets/launcher/SolusSetup.exe";
-                document.getElementById('alt-win').style.display = 'none';
-                document.getElementById('alt-lin').style.display = 'inline';
-                document.getElementById('alt-deb').style.display = 'inline';
-                document.getElementById('alt-rpm').style.display = 'inline';
-            }
-        }
 
         skinInput.addEventListener('input', (e) => {
             if (skinViewer) skinViewer.loadSkin(`https://minotar.net/skin/${e.target.value || "Steve"}`);
@@ -281,18 +258,25 @@
                     storeContainer.appendChild(div);
 
                     // Initialisation du petit viewer 3D pour l'item
-                    const itemViewer = new skinview3d.SkinViewer({
-                        canvas: canvas,
-                        width: 250,
-                        height: 300,
-                        pixelRatio: 1,
-                        skin: "https://minotar.net/skin/Steve"
-                    });
-                    itemViewer.camera.position.set(0, 10, -50);
-                    itemViewer.camera.lookAt(0, 10, 0);
-                    
-                    const itemIntervalRef = { current: null };
-                    animateSkinCape(itemViewer, proxiedImageUrl, itemIntervalRef);
+                    const initItemViewer = () => {
+                        if (typeof skinview3d === 'undefined') {
+                            setTimeout(initItemViewer, 500);
+                            return;
+                        }
+                        const itemViewer = new skinview3d.SkinViewer({
+                            canvas: canvas,
+                            width: 250,
+                            height: 300,
+                            pixelRatio: 1,
+                            skin: "https://minotar.net/skin/Steve"
+                        });
+                        itemViewer.camera.position.set(0, 10, -50);
+                        itemViewer.camera.lookAt(0, 10, 0);
+                        
+                        const itemIntervalRef = { current: null };
+                        animateSkinCape(itemViewer, proxiedImageUrl, itemIntervalRef);
+                    };
+                    initItemViewer();
                 });
                 ScrollReveal().reveal('.cos-item', { delay: 200, interval: 100 });
             } catch (e) {
