@@ -39,8 +39,14 @@
             </div>
 
             <div class="hero-btns">
-                <a href="/assets/launcher/SolusSetup.exe" class="btn-main">Jouer Maintenant</a>
-                <a href="#features" class="btn-sub">Explorer les mods</a>
+                <a href="/assets/launcher/SolusSetup.exe" class="btn-main" id="main-download">Télécharger pour Windows</a>
+                <div class="other-versions">
+                    <span>Autres versions :</span>
+                    <a href="/assets/launcher/SolusSetup.exe" id="alt-win">Windows (.exe)</a>
+                    <a href="/assets/launcher/Solus Client-1.0.2.AppImage" id="alt-lin">Linux (.AppImage)</a>
+                    <a href="/assets/launcher/Solus Client-1.0.2.deb" id="alt-deb">Linux (.deb)</a>
+                    <a href="/assets/launcher/Solus Client-1.0.2.rpm" id="alt-rpm">Linux (.rpm)</a>
+                </div>
             </div>
         </div>
         <div class="hero-visual">
@@ -140,7 +146,30 @@
         window.onload = () => {
             initViewer();
             fetchStore();
+            detectOS();
         };
+
+        function detectOS() {
+            const mainBtn = document.getElementById('main-download');
+            const platform = window.navigator.platform.toLowerCase();
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            
+            if (platform.includes('linux') || userAgent.includes('linux')) {
+                mainBtn.innerText = "Télécharger pour Linux";
+                mainBtn.href = "/assets/launcher/Solus Client-1.0.2.AppImage";
+                document.getElementById('alt-lin').style.display = 'none';
+                document.getElementById('alt-win').style.display = 'inline';
+                document.getElementById('alt-deb').style.display = 'inline';
+                document.getElementById('alt-rpm').style.display = 'inline';
+            } else {
+                mainBtn.innerText = "Télécharger pour Windows";
+                mainBtn.href = "/assets/launcher/SolusSetup.exe";
+                document.getElementById('alt-win').style.display = 'none';
+                document.getElementById('alt-lin').style.display = 'inline';
+                document.getElementById('alt-deb').style.display = 'inline';
+                document.getElementById('alt-rpm').style.display = 'inline';
+            }
+        }
 
         skinInput.addEventListener('input', (e) => {
             if (skinViewer) skinViewer.loadSkin(`https://minotar.net/skin/${e.target.value || "Steve"}`);

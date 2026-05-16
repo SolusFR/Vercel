@@ -105,6 +105,7 @@ body {
 span {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -198,38 +199,61 @@ header {
 
 .hero-btns {
     display: flex;
+    flex-direction: column;
     gap: 20px;
+    align-items: flex-start;
 }
 
 .btn-main {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: white;
     text-decoration: none;
-    padding: 18px 45px;
-    border-radius: 15px;
-    font-weight: 700;
+    padding: 20px 50px;
+    border-radius: 18px;
+    font-weight: 800;
+    font-size: 18px;
     transition: 0.4s;
     box-shadow: 0 15px 35px rgba(0, 242, 255, 0.25);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .btn-main:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 45px rgba(0, 242, 255, 0.35);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 45px rgba(0, 242, 255, 0.4);
 }
 
-.btn-sub {
-    background: var(--glass);
-    border: 1px solid var(--border);
-    color: white;
+.other-versions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding-left: 5px;
+}
+
+.other-versions span {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-weight: 500;
+    -webkit-text-fill-color: var(--text-dim); /* Overriding global span gradient */
+    background: none;
+}
+
+.other-versions a {
+    color: var(--text-dim);
     text-decoration: none;
-    padding: 18px 45px;
-    border-radius: 15px;
+    font-size: 13px;
     font-weight: 600;
     transition: 0.3s;
+    padding: 5px 10px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    border: 1px solid var(--border);
 }
 
-.btn-sub:hover {
-    background: rgba(255, 255, 255, 0.08);
+.other-versions a:hover {
+    color: var(--primary);
+    background: rgba(0, 242, 255, 0.05);
+    border-color: var(--primary);
 }
 
 /* Mockup */
