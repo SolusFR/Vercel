@@ -133,15 +133,20 @@
                     skin: "https://minotar.net/skin/Steve"
                 });
                 
-                // Vue de dos par défaut
+                // Configuration Premium identique au Launcher
                 skinViewer.autoRotate = false;
-                skinViewer.camera.position.set(0, 10, -50);
-                skinViewer.camera.lookAt(0, 10, 0);
+                skinViewer.camera.position.set(0, 12, -45);
+                skinViewer.camera.lookAt(0, 12, 0);
                 
+                // Lumières
+                skinViewer.globalLight.intensity = 0.50;
+                skinViewer.cameraLight.intensity = 0.50;
+                
+                // Animation synchronisée
                 const walk = skinViewer.animations.add(skinview3d.WalkingAnimation);
-                walk.speed = 0.5;
-
-                console.log("SkinView3D Legendary (Back View) initialisé.");
+                walk.speed = 0.6;
+                
+                console.log("SkinView3D Legendary Engine (Synchronized) prêt.");
             } catch (e) { console.error(e); }
         }
 
@@ -271,8 +276,12 @@
                             pixelRatio: 1,
                             skin: "https://minotar.net/skin/Steve"
                         });
-                        itemViewer.camera.position.set(0, 10, -50);
-                        itemViewer.camera.lookAt(0, 10, 0);
+                        itemViewer.camera.position.set(0, 12, -45);
+                        itemViewer.camera.lookAt(0, 12, 0);
+                        
+                        // Lumières pour les items
+                        itemViewer.globalLight.intensity = 0.50;
+                        itemViewer.cameraLight.intensity = 0.50;
                         
                         const itemIntervalRef = { current: null };
                         animateSkinCape(itemViewer, proxiedImageUrl, itemIntervalRef);
