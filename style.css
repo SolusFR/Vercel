@@ -384,7 +384,7 @@ header {
 
 .cos-img {
     height: 300px;
-    background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+    background: radial-gradient(circle at center, rgba(255,255,255,0.08) 0%, transparent 80%);
     display: flex;
     justify-content: center;
     align-items: center;

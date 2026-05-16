@@ -276,15 +276,21 @@
                             pixelRatio: 1,
                             skin: "https://minotar.net/skin/Steve"
                         });
-                        itemViewer.camera.position.set(0, 12, -45);
-                        itemViewer.camera.lookAt(0, 12, 0);
                         
-                        // Lumières pour les items
-                        itemViewer.globalLight.intensity = 0.50;
-                        itemViewer.cameraLight.intensity = 0.50;
+                        // Positionnement de dos précis
+                        itemViewer.camera.position.set(0, 14, -40);
+                        itemViewer.camera.lookAt(0, 14, 0);
+                        
+                        // Lumières boostées pour les petits modèles
+                        itemViewer.globalLight.intensity = 0.80;
+                        itemViewer.cameraLight.intensity = 0.80;
                         
                         const itemIntervalRef = { current: null };
                         animateSkinCape(itemViewer, proxiedImageUrl, itemIntervalRef);
+
+                        // Optimisation : On arrête l'animation du modèle si on ne le survole pas (optionnel mais recommandé)
+                        canvas.onmouseenter = () => { itemViewer.animations.paused = false; };
+                        canvas.onmouseleave = () => { itemViewer.animations.paused = true; };
                     };
                     initItemViewer();
                 });
