@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Télécharger Solus Client | Premium Experience</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <style>
+        .download-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 8%;
+            text-align: center;
+        }
+
+        .dl-header {
+            margin-bottom: 60px;
+        }
+
+        .dl-header h1 {
+            font-size: 52px;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .dl-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .dl-card {
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 50px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            transition: 0.4s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .dl-card:hover {
+            transform: translateY(-15px);
+            border-color: var(--primary);
+            box-shadow: 0 30px 60px rgba(0, 242, 255, 0.1);
+        }
+
+        .os-icon {
+            font-size: 60px;
+            margin-bottom: 25px;
+        }
+
+        .dl-card h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .dl-card p {
+            color: var(--text-dim);
+            margin-bottom: 35px;
+            font-size: 16px;
+        }
+
+        .btn-dl-main {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 18px;
+            border-radius: 15px;
+            font-weight: 800;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .btn-dl-main:hover {
+            box-shadow: 0 10px 25px rgba(0, 242, 255, 0.3);
+            transform: scale(1.02);
+        }
+
+        .linux-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .linux-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .linux-btn:hover {
+            background: rgba(255,255,255,0.08);
+            color: white;
+            border-color: white;
+        }
+
+        .back-link {
+            margin-top: 50px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-bg"></div>
+    
+    <div class="download-page">
+        <div class="dl-header">
+            <div class="badge">DISPONIBLE MAINTENANT</div>
+            <h1>Choisissez votre <span>Plateforme</span></h1>
+            <p>Téléchargez la version de Solus Client adaptée à votre système.</p>
+        </div>
+
+        <div class="dl-grid">
+            <!-- Windows Card -->
+            <div class="dl-card">
+                <div class="os-icon">🪟</div>
+                <h2>Windows</h2>
+                <p>Compatible avec Windows 10 & 11 (64-bit).</p>
+                <a href="/assets/launcher/SolusSetup.exe" class="btn-dl-main">Télécharger .exe</a>
+                <p style="font-size: 12px; margin-top: 10px;">Version stable : 1.0.2</p>
+            </div>
+
+            <!-- Linux Card -->
+            <div class="dl-card">
+                <div class="os-icon">🐧</div>
+                <h2>Linux</h2>
+                <p>Support complet pour toutes les distributions.</p>
+                <a href="/assets/launcher/Solus Client-1.0.2.AppImage" class="btn-dl-main">Télécharger .AppImage</a>
+                
+                <div class="linux-options">
+                    <a href="/assets/launcher/Solus Client-1.0.2.deb" class="linux-btn">Format Debian / Ubuntu (.deb)</a>
+                    <a href="/assets/launcher/Solus Client-1.0.2.rpm" class="linux-btn">Format Fedora / RedHat (.rpm)</a>
+                </div>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link">← Retour à l'accueil</a>
+    </div>
+</body>
+</html>
