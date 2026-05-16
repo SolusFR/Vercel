@@ -1,10 +1,8 @@
 {
   "version": 2,
-  "public": true,
-  "name": "solus-landing",
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/api/:path*", "destination": "http://srv680198.hstgr.cloud:7777/api/:path*" },
-    { "source": "/assets/:path*", "destination": "http://srv680198.hstgr.cloud:7777/assets/:path*" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/assets/:path*", "destination": "http://srv680198.hstgr.cloud:7777/assets/:path*" }
   ]
 }

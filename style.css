@@ -199,19 +199,19 @@ header {
 
 .hero-btns {
     display: flex;
-    flex-direction: column;
     gap: 20px;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 .btn-main {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: white;
     text-decoration: none;
-    padding: 20px 50px;
+    padding: 20px 45px;
     border-radius: 18px;
     font-weight: 800;
-    font-size: 18px;
+    font-size: 16px;
     transition: 0.4s;
     box-shadow: 0 15px 35px rgba(0, 242, 255, 0.25);
     text-transform: uppercase;
@@ -223,36 +223,24 @@ header {
     box-shadow: 0 20px 45px rgba(0, 242, 255, 0.4);
 }
 
-.other-versions {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    padding-left: 5px;
-}
-
-.other-versions span {
-    font-size: 13px;
-    color: var(--text-dim);
-    font-weight: 500;
-    -webkit-text-fill-color: var(--text-dim); /* Overriding global span gradient */
-    background: none;
-}
-
-.other-versions a {
-    color: var(--text-dim);
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    transition: 0.3s;
-    padding: 5px 10px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 8px;
+.btn-sub {
+    background: var(--glass);
     border: 1px solid var(--border);
+    color: white;
+    text-decoration: none;
+    padding: 20px 45px;
+    border-radius: 18px;
+    font-weight: 700;
+    font-size: 16px;
+    transition: 0.3s;
+    backdrop-filter: blur(10px);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.other-versions a:hover {
-    color: var(--primary);
-    background: rgba(0, 242, 255, 0.05);
+.btn-sub:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-5px);
     border-color: var(--primary);
 }
 
